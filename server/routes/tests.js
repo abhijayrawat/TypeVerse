@@ -1,4 +1,3 @@
-// server/routes/tests.js (or same file you're using for test routes)
 import express from "express";
 import TestResult from "../models/TestResult.js";
 import auth from "../middleware/auth.js";
@@ -7,9 +6,15 @@ const router = express.Router();
 
 // Save a test result
 router.post("/", auth, async (req, res) => {
-  const { wpm, accuracy, time } = req.body;
-  if (wpm === undefined || accuracy === undefined || time === undefined) {
-    return res.status(400).json({ message: "Missing fields" });
+  const { wpm, accuracy, time, wordCount, mode } = req.body;
+  if (
+    wpm === undefined ||
+    accuracy === undefined ||
+    time === undefined ||
+    wordCount === undefined ||
+    !["time", "words"].includes(mode)
+  ) {
+    return res.status(400).json({ message: "Missing or invalid fields" });
   }
   try {
     const result = await TestResult.create({
@@ -17,6 +22,8 @@ router.post("/", auth, async (req, res) => {
       wpm,
       accuracy,
       time,
+      wordCount,
+      mode,
       date: new Date(),
     });
     res.status(201).json(result);
@@ -26,17 +33,24 @@ router.post("/", auth, async (req, res) => {
   }
 });
 
-// Get test history for user
+// Get test history for user, with optional mode filter
 router.get("/", auth, async (req, res) => {
   try {
-    const history = await TestResult.find({ user: req.user.id }).sort({ date: -1 });
+    const userId = req.user.id;
+    const modeFilter = req.query.mode;
+    const filter = { user: userId };
+
+    if (modeFilter === "time" || modeFilter === "words") {
+      filter.mode = modeFilter;
+    }
+
+    const history = await TestResult.find(filter).sort({ date: -1 });
     res.json(history);
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Server error" });
   }
 });
-
 /**
  * Delete/Clear tests for a user filtered by time frame and/or limit.
  * Body params:

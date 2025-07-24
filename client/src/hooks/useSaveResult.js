@@ -1,12 +1,17 @@
-import { useEffect, useContext } from "react";
+// useSaveResult.js
+import { useEffect, useContext, useRef } from "react";
 import axios from "axios";
 import { AuthContext } from "../context/AuthContext";
 
-export default function useSaveResult(finished, { mode, testDuration, wordList, stats }) {
-  const { token } = useContext(AuthContext);
+export default function useSaveResult(finished, { mode, testDuration, wordList, stats, token }) {
+  const hasSavedRef = useRef(false);
 
   useEffect(() => {
-    if (!finished) return;
+    if (!finished) {
+      hasSavedRef.current = false;
+      return;
+    }
+    if (hasSavedRef.current) return;
 
     const saveResult = async () => {
       try {
@@ -18,6 +23,7 @@ export default function useSaveResult(finished, { mode, testDuration, wordList, 
               accuracy: stats.accuracy,
               time: mode === "time" ? testDuration : 0,
               wordCount: wordList.length,
+              mode,  // <--- Pass mode here
             },
             { headers: { Authorization: `Bearer ${token}` } }
           );
@@ -28,11 +34,13 @@ export default function useSaveResult(finished, { mode, testDuration, wordList, 
             accuracy: stats.accuracy,
             time: mode === "time" ? testDuration : 0,
             wordCount: wordList.length,
+            mode, // <--- Save mode here for guest
             date: new Date().toISOString(),
           });
           if (guestTests.length > 50) guestTests.pop();
           localStorage.setItem("typeverse-guest-tests", JSON.stringify(guestTests));
         }
+        hasSavedRef.current = true;
       } catch (e) {
         console.error("Failed to save test result", e);
       }

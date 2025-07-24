@@ -1,21 +1,30 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 
+const MODES = [
+  { label: "Timed Mode", value: "time" },
+  { label: "Word Count Mode", value: "words" },
+];
+
 export default function Leaderboard() {
   const [leaders, setLeaders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [modeFilter, setModeFilter] = useState("time");
 
   useEffect(() => {
+    setLoading(true);
     axios
-      .get(`${import.meta.env.VITE_API_URL}/api/leaderboard`)
+      .get(`${import.meta.env.VITE_API_URL}/api/leaderboard`, {
+        params: { mode: modeFilter },
+      })
       .then((res) => {
         setLeaders(res.data);
         setError(null);
       })
       .catch(() => setError("Failed to load leaderboard"))
       .finally(() => setLoading(false));
-  }, []);
+  }, [modeFilter]);
 
   if (loading) return <div className="p-4">Loading leaderboard...</div>;
   if (error) return <div className="p-4 text-red-500">{error}</div>;
@@ -23,6 +32,23 @@ export default function Leaderboard() {
   return (
     <div className="max-w-4xl p-8 mx-auto bg-zinc-800 rounded text-white shadow">
       <h1 className="text-3xl font-bold mb-6">Global Leaderboard</h1>
+
+      {/* Mode Filter Dropdown */}
+      <div className="mb-4">
+        <select
+          aria-label="Filter leaderboard by mode"
+          className="bg-zinc-800 text-white rounded py-1 px-3 font-mono focus:outline-none focus:ring-2 focus:ring-yellow-400"
+          value={modeFilter}
+          onChange={(e) => setModeFilter(e.target.value)}
+        >
+          {MODES.map(({ label, value }) => (
+            <option key={value} value={value}>
+              {label}
+            </option>
+          ))}
+        </select>
+      </div>
+
       <table className="w-full table-auto border-collapse border border-zinc-600">
         <thead>
           <tr className="bg-zinc-700">

@@ -5,6 +5,8 @@ const TestResultSchema = new mongoose.Schema({
   wpm: { type: Number, required: true },
   accuracy: { type: Number, required: true },
   time: { type: Number, required: true }, // seconds
+  wordCount: { type: Number, required: true }, // seconds
+  mode: { type: String, enum: ["time", "words"], required: true }, // New field
   date: { type: Date, default: Date.now },
 });
 

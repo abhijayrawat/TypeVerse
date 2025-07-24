@@ -18,6 +18,12 @@ const TIMEFRAMES = [
   { label: "This Month", value: "month" },
 ];
 
+const MODES = [
+  // { label: "All Modes", value: "all" },
+  { label: "Timed Mode", value: "time" },
+  { label: "Word Count Mode", value: "words" },
+];
+
 export default function Dashboard() {
   const { user, token } = useContext(AuthContext);
   const [history, setHistory] = useState([]);
@@ -25,47 +31,43 @@ export default function Dashboard() {
   const [error, setError] = useState(null);
   const [clearLoading, setClearLoading] = useState(false);
 
-  // New state for filtering test history and clearing scope
   const [timeFilter, setTimeFilter] = useState("all");
+  const [modeFilter, setModeFilter] = useState("time");
 
-  // Fetch test history
   const fetchHistory = () => {
-    if (user && token) {
-      setLoading(true);
-      axios
-        .get(`${import.meta.env.VITE_API_URL}/api/tests?timeFrame=${timeFilter}`, {
-          headers: { Authorization: `Bearer ${token}` },
-        })
-        .then((res) => {
-          setHistory(res.data);
-          setError(null);
-        })
-        .catch(() => setError("Failed to fetch test history"))
-        .finally(() => setLoading(false));
-    } else {
-      try {
-        const guestTests = JSON.parse(localStorage.getItem("typeverse-guest-tests") || "[]");
-        setHistory(guestTests);
-        setError(null);
-      } catch {
-        setHistory([]);
-        setError("Failed to load local test history");
-      }
+    if (!user || !token) {
       setLoading(false);
+      setHistory([]);
+      return;
     }
+    setLoading(true);
+    axios
+      .get(`${import.meta.env.VITE_API_URL}/api/tests`, {
+        headers: { Authorization: `Bearer ${token}` },
+        params: { timeFrame: timeFilter, mode: modeFilter },
+      })
+      .then((res) => {
+        setHistory(res.data);
+        setError(null);
+      })
+      .catch(() => setError("Failed to fetch test history"))
+      .finally(() => setLoading(false));
   };
 
-  // Fetch history on mount and when user/token/timeFilter changes
   useEffect(() => {
     fetchHistory();
-  }, [user, token, timeFilter]);
+  }, [user, token, timeFilter, modeFilter]);
 
-  // Calculate stats
-  const bestWpm = history.length > 0 ? Math.max(...history.map((t) => t.wpm)) : 0;
-  const bestAccuracy = history.length > 0 ? Math.max(...history.map((t) => t.accuracy)) : 0;
+  const bestWpm =
+    history.length > 0 ? Math.max(...history.map((t) => t.wpm)) : 0;
+  const bestAccuracy =
+    history.length > 0 ? Math.max(...history.map((t) => t.accuracy)) : 0;
 
-  // Handler to clear tests (deletes all matching the current timeFilter)
-  const clearTests = async ({ timeFrame = timeFilter, limit } = {}) => {
+  const clearTests = async ({
+    timeFrame = timeFilter,
+    mode = modeFilter,
+    limit,
+  } = {}) => {
     if (!token) {
       alert("Login required to clear saved tests!");
       return;
@@ -74,13 +76,14 @@ export default function Dashboard() {
     if (!window.confirm("Are you sure you want to clear these tests?")) return;
 
     setClearLoading(true);
-
     try {
-      const res = await axios.delete(`${import.meta.env.VITE_API_URL}/api/tests/clear`, {
-        headers: { Authorization: `Bearer ${token}` },
-        data: { timeFrame, limit },
-      });
-
+      const res = await axios.delete(
+        `${import.meta.env.VITE_API_URL}/api/tests/clear`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+          data: { timeFrame, mode, limit },
+        }
+      );
       if (res.status === 200) {
         alert("Tests cleared successfully");
         fetchHistory();
@@ -108,12 +111,10 @@ export default function Dashboard() {
         <StatsCard label="Tests Taken" value={history.length} />
       </div>
 
-      {/* Test History header with inline filter and clear buttons */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-3 gap-4">
         <h2 className="text-xl font-bold">Test History</h2>
 
         <div className="flex flex-wrap items-center gap-3">
-          {/* Timeframe filter dropdown */}
           <select
             aria-label="Filter test history by time"
             className="bg-zinc-800 text-white rounded py-1 px-3 font-mono focus:outline-none focus:ring-2 focus:ring-yellow-400"
@@ -127,17 +128,33 @@ export default function Dashboard() {
             ))}
           </select>
 
-          {/* Clear buttons */}
+          <select
+            aria-label="Filter test history by mode"
+            className="bg-zinc-800 text-white rounded py-1 px-3 font-mono focus:outline-none focus:ring-2 focus:ring-yellow-400"
+            value={modeFilter}
+            onChange={(e) => setModeFilter(e.target.value)}
+          >
+            {MODES.map(({ label, value }) => (
+              <option key={value} value={value}>
+                {label}
+              </option>
+            ))}
+          </select>
+
           <button
             disabled={clearLoading}
-            onClick={() => clearTests({ timeFrame: timeFilter, limit: 5 })}
+            onClick={() =>
+              clearTests({ timeFrame: timeFilter, mode: modeFilter, limit: 5 })
+            }
             className="px-4 py-1 font-semibold rounded bg-red-600 hover:bg-red-700 disabled:opacity-50 transition focus:outline-none focus:ring-2 focus:ring-red-500"
           >
             Clear Last 5
           </button>
           <button
             disabled={clearLoading}
-            onClick={() => clearTests({ timeFrame: timeFilter })}
+            onClick={() =>
+              clearTests({ timeFrame: timeFilter, mode: modeFilter })
+            }
             className="px-4 py-1 font-semibold rounded bg-red-600 hover:bg-red-700 disabled:opacity-50 transition focus:outline-none focus:ring-2 focus:ring-red-500"
           >
             Clear All
@@ -155,6 +172,7 @@ export default function Dashboard() {
               <th className="p-2 text-left">WPM</th>
               <th className="p-2 text-left">Accuracy</th>
               <th className="p-2 text-left">Time (s)</th>
+              <th className="p-2 text-left">Mode</th>
             </tr>
           </thead>
           <tbody>
@@ -163,7 +181,11 @@ export default function Dashboard() {
                 <td className="p-2">{new Date(test.date).toLocaleString()}</td>
                 <td className="p-2">{test.wpm}</td>
                 <td className="p-2">{test.accuracy}%</td>
-                <td className="p-2">{test.time}</td>
+                <td className="p-2">
+                  {test.mode === "words" ? test.wordCount : test.time}
+                </td>
+
+                <td className="p-2 capitalize">{test.mode}</td>
               </tr>
             ))}
           </tbody>
