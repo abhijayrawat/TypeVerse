@@ -5,6 +5,7 @@ import Dashboard from "./components/Dashboard";
 import Login from "./components/Login";
 import Signup from "./components/Signup";
 import Leaderboard from "./components/Leaderboard.jsx";
+import Profile from "./components/Profile";
 
 import PrivateRoute from "./components/PrivateRoute";
 
@@ -28,6 +29,14 @@ export default function App() {
             }
             >
             </Route>
+             <Route
+    path="/profile"
+    element={
+      <PrivateRoute>
+        <Profile />
+      </PrivateRoute>
+    }
+  />
           {/* Add other routes here */}
         </Routes>
       </div>
