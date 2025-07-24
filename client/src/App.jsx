@@ -4,6 +4,7 @@ import TypingTest from "./components/TypingTest";
 import Dashboard from "./components/Dashboard";
 import Login from "./components/Login";
 import Signup from "./components/Signup";
+import Leaderboard from "./components/Leaderboard.jsx";
 
 import PrivateRoute from "./components/PrivateRoute";
 
@@ -18,6 +19,15 @@ export default function App() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
+          <Route
+            path="/leaderboard"
+            element={
+              <PrivateRoute>
+                <Leaderboard />
+              </PrivateRoute>
+            }
+            >
+            </Route>
           {/* Add other routes here */}
         </Routes>
       </div>

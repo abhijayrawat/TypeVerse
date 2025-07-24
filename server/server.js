@@ -7,6 +7,7 @@ import cors from "cors";
 
 import authRoutes from "./routes/auth.js";
 import testsRoutes from "./routes/tests.js";
+import leaderboardRoutes from "./routes/leaderboard.js";
 
 const app = express();
 
@@ -18,6 +19,7 @@ app.get("/api/ping", (req, res) => res.json({ message: "pong" }));
 
 app.use("/api/auth", authRoutes);
 app.use("/api/tests", testsRoutes);
+app.use("/api/leaderboard", leaderboardRoutes);
 
 const PORT = process.env.PORT || 5000;
 console.log("PORT:", PORT);
