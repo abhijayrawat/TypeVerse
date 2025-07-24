@@ -6,7 +6,8 @@
 
 ## ✨ Features
 
-* ⏱ **Timed Tests**: Choose between **15s**, **30s**, or **60s** test durations.
+* ⏱ **Timed Tests**: Choose between test durations.
+* 📝 **Word Test Mode**: Set a target word count  instead of time.
 * ⌨️ **Typing Modes**:
 
   * *Auto-Skip Spaces*: Type letters continuously, spaces are inserted automatically.
@@ -18,6 +19,8 @@
   * Guest results stored locally in the browser.
 * 🎯 **Cumulative Accuracy**: Errors stay highlighted; accuracy doesn't reset between words.
 * 🔁 **Dynamic Word Pool**: Words are randomized on each test run from a configurable list.
+* 🌐 **Global Leaderboard**: Compare scores with users worldwide.
+* 🧑‍💼 **User Dashboard**: View personal typing history and performance trends.
 * 📱 **Responsive UI**: Built with **Tailwind CSS** for a clean, mobile-friendly layout.
 * ♿ **Accessible Controls**: Includes keyboard focus states, ARIA-compliant buttons, and clear feedback.
 
@@ -92,10 +95,10 @@
 
 ## 🧪 Usage
 
-1. Choose a test duration (15s, 30s, or 60s).
+1. Choose a test duration (15s, 30s, or 60s) or word target.
 2. Toggle “Skip Spaces” to enable continuous typing or manual space input.
 3. Start typing and track your performance live.
-4. View your results after the timer ends.
+4. View your results after the timer or word target ends.
 5. Log in to save your results—or try again as a guest!
 
 ---
