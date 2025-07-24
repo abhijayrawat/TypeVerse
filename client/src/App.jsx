@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import TypingTest from "./components/TypingTest";
-import Dashboard from "./components/Dashboard";
+import Dashboard from "./components/Dashboard/Dashboard.jsx";
 import Login from "./components/Login";
 import Signup from "./components/Signup";
 import Leaderboard from "./components/Leaderboard.jsx";

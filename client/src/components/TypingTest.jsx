@@ -58,7 +58,7 @@ export default function TypingTest() {
   return (
     <div className="relative flex flex-col items-center min-h-screen bg-zinc-900 text-white pt-20 p-6">
 
-      <h1 className="text-4xl font-mono font-bold mb-8">TypeVerse</h1>
+      {/* <h1 className="text-4xl font-mono font-bold mb-8">TypeVerse</h1> */}
 
       <ModeSelector mode={mode} setMode={setMode} started={started} restart={restart} />
 
