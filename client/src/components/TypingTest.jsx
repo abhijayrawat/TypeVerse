@@ -42,19 +42,38 @@ export default function TypingTest() {
     return { wpm, accuracy };
   };
 
-  // Save to backend when test finishes
+  // Save to backend or localStorage when test finishes
   useEffect(() => {
-    if (finished && token) {
-      const { wpm, accuracy } = calculateStats();
-      const testTime = 5;
+    if (!finished) return;
 
+    const { wpm, accuracy } = calculateStats();
+    const testTime = 5;
+
+    if (token) {
+      // Logged-in user: save to backend
       axios
         .post(
           `${import.meta.env.VITE_API_URL}/api/tests`,
           { wpm, accuracy, time: testTime },
           { headers: { Authorization: `Bearer ${token}` } }
         )
-        .catch((err) => console.error("Failed to save test result", err));
+        .catch((err) => console.error("Failed to save test result", err.response?.data || err.message));
+    } else {
+      // Guest user: save to localStorage
+      try {
+        const guestTests = JSON.parse(localStorage.getItem("typeverse-guest-tests") || "[]");
+        const newTest = { wpm, accuracy, time: testTime, date: new Date().toISOString() };
+        guestTests.unshift(newTest);
+
+        // Optionally limit guest history length, e.g., max 50 tests
+        if (guestTests.length > 50) {
+          guestTests.pop();
+        }
+
+        localStorage.setItem("typeverse-guest-tests", JSON.stringify(guestTests));
+      } catch (e) {
+        console.error("Failed to save guest test result", e);
+      }
     }
   }, [finished]);
 
@@ -115,7 +134,9 @@ export default function TypingTest() {
       {finished && (
         <div className="mt-6 p-4 border border-yellow-500 rounded max-w-4xl text-center font-mono">
           <h2 className="text-yellow-400 text-2xl font-bold mb-2">Test finished!</h2>
-          <p>Your final WPM is <strong>{stats.wpm}</strong> and accuracy is <strong>{stats.accuracy}%</strong>.</p>
+          <p>
+            Your final WPM is <strong>{stats.wpm}</strong> and accuracy is <strong>{stats.accuracy}%</strong>.
+          </p>
         </div>
       )}
     </div>

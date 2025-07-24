@@ -12,16 +12,10 @@ export default function App() {
     <BrowserRouter>
       <Navbar />
       <div className="pt-16 min-h-screen bg-zinc-900 text-white">
-        <Routes>
+        
+          <Routes>
           <Route path="/" element={<TypingTest />} />
-          <Route
-            path="/dashboard"
-            element={
-              <PrivateRoute>
-                <Dashboard />
-              </PrivateRoute>
-            }
-          />
+          <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           {/* Add other routes here */}
