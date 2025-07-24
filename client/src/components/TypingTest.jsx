@@ -1,4 +1,4 @@
-import React, { useState, useContext, useCallback } from "react";
+import React, { useState, useContext, useCallback,useMemo } from "react";
 import { AuthContext } from "../context/AuthContext";
 import TypingDisplay from "./TypingDisplay";
 import TypingArea from "./TypingArea";
@@ -32,7 +32,7 @@ export default function TypingTest() {
     correctChars,
   } = useTypingTest();
 
-  const stats = calcStats();
+  const stats = useMemo(() => calcStats(), [calcStats]);
   const [muted, setMuted] = useState(false);
 
   useSaveResult(finished, { mode, testDuration, wordList, stats, token });

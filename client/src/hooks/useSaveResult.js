@@ -47,5 +47,5 @@ export default function useSaveResult(finished, { mode, testDuration, wordList, 
     };
 
     saveResult();
-  }, [finished, token, mode, testDuration, wordList.length, stats]);
+  }, [finished, token, mode, testDuration, wordList.length, stats.wpm,stats.accuracy]);
 }
