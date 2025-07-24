@@ -1,86 +1,162 @@
-# TypeVerse
+# 🚀 TypeVerse
 
-TypeVerse is a modern, responsive typing test application built with React, Vite, Express, and MongoDB. It challenges users with randomized word lists, tracks performance time, and offers flexible typing modes—for a customized practice experience.
+**TypeVerse** is a modern, responsive typing test web application built with **React**, **Vite**, **Express**, and **MongoDB**. It challenges users with dynamically generated word lists, tracks performance in real-time, and offers flexible typing modes—for a personalized typing experience.
 
-## Features
+---
 
-- **Timed Tests**: Choose between 15 s, 30 s, or 60 s durations.  
-- **Auto-Skip Spaces Mode**: Type letters continuously; spaces are inserted automatically.  
-- **Explicit-Spaces Mode**: Type spaces manually, matching traditional typing tests.  
-- **Real-Time Stats**: Live WPM, accuracy, and countdown timer during each test.  
-- **Persistent Results**: Logged-in users’ results saved to the backend; guests’ results stored locally.  
-- **Cumulative Accuracy**: Mistakes remain highlighted; accuracy never resets when moving between words.  
-- **Dynamic Word Generation**: Randomized word lists on each test run, sourced from a configurable pool.  
-- **Responsive UI**: Tailwind CSS styling for a clean, mobile-friendly interface.  
-- **Accessible Controls**: Keyboard focus rings, clear color-coded feedback, and ARIA-friendly buttons.
+## ✨ Features
 
-## Getting Started
+* ⏱ **Timed Tests**: Choose between **15s**, **30s**, or **60s** test durations.
+* ⌨️ **Typing Modes**:
 
-### Prerequisites
+  * *Auto-Skip Spaces*: Type letters continuously, spaces are inserted automatically.
+  * *Explicit Spaces*: Manually type spaces, similar to traditional tests.
+* 📊 **Live Stats**: Real-time WPM, accuracy, and countdown timer while typing.
+* 📂 **Persistent Results**:
 
-- Node.js ≥ 14.x  
-- npm or Yarn  
-- MongoDB URI (for production)
+  * Logged-in users’ results saved to MongoDB.
+  * Guest results stored locally in the browser.
+* 🎯 **Cumulative Accuracy**: Errors stay highlighted; accuracy doesn't reset between words.
+* 🔁 **Dynamic Word Pool**: Words are randomized on each test run from a configurable list.
+* 📱 **Responsive UI**: Built with **Tailwind CSS** for a clean, mobile-friendly layout.
+* ♿ **Accessible Controls**: Includes keyboard focus states, ARIA-compliant buttons, and clear feedback.
 
-### Installation
+---
 
-1. **Clone the repository**  
+## ⚙️ Getting Started
 
-2. **Install dependencies**  
+### 📦 Prerequisites
 
+* **Node.js** ≥ 14.x
+* **npm** or **Yarn**
+* **MongoDB URI** (for database connection)
 
-3. **Create environment files**  
-- **server/.env**  
-  ```
-  PORT=5000
-  MONGO_URI=your_mongodb_uri
-  JWT_SECRET=your_jwt_secret
-  FRONTEND_URL=http://localhost:5173
-  ```  
-- **client/.env**  
-  ```
-  VITE_API_URL=http://localhost:5000
-  ```
+---
 
-### Development
+### 🛠 Installation
 
-1. Start your database if using local MongoDB.  
-2. Run the backend:  
-3. Run the frontend:  
-4. Open [http://localhost:5173](http://localhost:5173) in your browser.
+1. **Clone the repository**:
 
-## Usage
+   ```bash
+   git clone https://github.com/your-username/typeverse.git
+   cd typeverse
+   ```
 
-1. Select a test duration (15 s, 30 s, 60 s).  
-2. Toggle “Skip Spaces” to type continuously or type spaces manually.  
-3. Start typing! Watch live WPM and accuracy updates.  
-4. When time’s up, view your final stats and have results saved.  
-5. Restart or adjust settings for a new challenge.
+2. **Install dependencies**:
 
-## Project Structure
+   ```bash
+   cd client && npm install
+   cd ../server && npm install
+   ```
 
+3. **Create environment variables**:
 
-## Available Scripts
+   * `server/.env`
+
+     ```env
+     PORT=5000
+     MONGO_URI=your_mongodb_uri
+     JWT_SECRET=your_jwt_secret
+     FRONTEND_URL=http://localhost:5173
+     ```
+
+   * `client/.env`
+
+     ```env
+     VITE_API_URL=http://localhost:5000
+     ```
+
+---
+
+### 💻 Development
+
+1. Start MongoDB (locally or using a remote URI).
+
+2. Run the **backend**:
+
+   ```bash
+   cd server
+   npm run dev
+   ```
+
+3. Run the **frontend**:
+
+   ```bash
+   cd client
+   npm run dev
+   ```
+
+4. Open the app at [http://localhost:5173](http://localhost:5173)
+
+---
+
+## 🧪 Usage
+
+1. Choose a test duration (15s, 30s, or 60s).
+2. Toggle “Skip Spaces” to enable continuous typing or manual space input.
+3. Start typing and track your performance live.
+4. View your results after the timer ends.
+5. Log in to save your results—or try again as a guest!
+
+---
+
+## 📁 Project Structure
+
+```
+typeverse/
+├── client/         # Frontend (React + Vite)
+│   ├── public/
+│   ├── src/
+│   └── ...
+├── server/         # Backend (Express + MongoDB)
+│   ├── models/
+│   ├── routes/
+│   ├── controllers/
+│   └── ...
+└── README.md
+```
+
+---
+
+## 📜 Available Scripts
 
 ### Frontend (`client`)
 
-- `npm run dev` — start development server  
-- `npm run build` — production build  
-- `npm run preview` — preview production build
+* `npm run dev` — Start Vite dev server
+* `npm run build` — Build production assets
+* `npm run preview` — Preview production build
 
 ### Backend (`server`)
 
-- `npm run dev` — start with nodemon (development)  
-- `npm start` — start production server  
+* `npm run dev` — Run with Nodemon
+* `npm start` — Start production server
 
-## Contributing
+---
 
-1. Fork the repository.  
-2. Create your feature branch:  
-3. Commit your changes:  
-4. Push to your branch:  
-5. Open a Pull Request.
+## 🤝 Contributing
 
-## License
+Contributions are welcome! Follow these steps:
 
-This project is licensed under the MIT License.
+1. Fork the repository
+2. Create your feature branch
+
+   ```bash
+   git checkout -b feature/your-feature
+   ```
+3. Commit your changes
+
+   ```bash
+   git commit -m "feat: add new feature"
+   ```
+4. Push to your branch
+
+   ```bash
+   git push origin feature/your-feature
+   ```
+5. Open a Pull Request
+
+---
+
+## 📄 License
+
+This project is licensed under the [MIT License](./LICENSE).
