@@ -22,7 +22,7 @@ export default function ModeSelector({ mode, setMode, started, restart }) {
         onClick={() => {
           if (!started) {
             setMode("words");
-            restart(undefined, 25, "words");
+            restart(undefined, 10, "words");
           }
         }}
         disabled={started}
