@@ -1,20 +1,13 @@
 import express from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import User from "../models/User.js"; // note .js added
+import User from "../models/User.js"; // Update path if necessary
 
 const router = express.Router();
 
-const JWT_SECRET = process.env.JWT_SECRET || "your_jwt_secret";
+// We do NOT fetch JWT_SECRET here globally.
+// Instead, fetch it inside route handlers after dotenv has loaded.
 
-if (!JWT_SECRET) {
-  console.error("JWT_SECRET not set in environment");
-  process.exit(1);
-}
-
-
-
-// Register
 router.post("/register", async (req, res) => {
   try {
     const { username, email, password } = req.body;
@@ -36,7 +29,6 @@ router.post("/register", async (req, res) => {
   }
 });
 
-// Login
 router.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -49,6 +41,12 @@ router.post("/login", async (req, res) => {
     const validPassword = await bcrypt.compare(password, user.passwordHash);
     if (!validPassword)
       return res.status(401).json({ message: "Invalid credentials" });
+
+    const JWT_SECRET = process.env.JWT_SECRET;
+    if (!JWT_SECRET) {
+      console.error("JWT_SECRET not set in environment");
+      return res.status(500).json({ message: "Server config error" });
+    }
 
     const token = jwt.sign(
       { id: user._id, username: user.username, email: user.email },

@@ -15,7 +15,7 @@ export default function TypingTest() {
   const [wordList, setWordList] = useState(getWords());
   const [input, setInput] = useState("");
   const [started, setStarted] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(15);
+  const [timeLeft, setTimeLeft] = useState(5);
   const [finished, setFinished] = useState(false);
   const [correctChars, setCorrectChars] = useState(0);
   const [totalChars, setTotalChars] = useState(0);
@@ -36,7 +36,7 @@ export default function TypingTest() {
 
   // Calculate stats
   const calculateStats = () => {
-    const elapsedTime = 15 - timeLeft;
+    const elapsedTime = 5 - timeLeft;
     const wpm = elapsedTime > 0 ? Math.round((correctChars / 5 / elapsedTime) * 60) : 0;
     const accuracy = totalChars > 0 ? Math.round((correctChars / totalChars) * 100) : 100;
     return { wpm, accuracy };
@@ -46,7 +46,7 @@ export default function TypingTest() {
   useEffect(() => {
     if (finished && token) {
       const { wpm, accuracy } = calculateStats();
-      const testTime = 15;
+      const testTime = 5;
 
       axios
         .post(
@@ -80,7 +80,7 @@ export default function TypingTest() {
     setWordList(getWords());
     setInput("");
     setStarted(false);
-    setTimeLeft(15);
+    setTimeLeft(5);
     setFinished(false);
     setCorrectChars(0);
     setTotalChars(0);
