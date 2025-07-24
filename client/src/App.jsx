@@ -1,12 +1,15 @@
-import { useState } from 'react'
-import './App.css'
+import TypingTest from "./components/TypingTest";
+import Navbar from "./components/Navbar";
+import { BrowserRouter } from "react-router-dom";
 
-function App() {
-  const [count, setCount] = useState(0)
-
-  return (
-    <div className='text-red-200'>Hello</div>
+export default function App() {
+  
+  return(
+    <BrowserRouter>
+    <div className="pt-16"> {/* Add padding to prevent overlap from fixed navbar */}
+        <Navbar />
+        <TypingTest />
+      </div>
+    </BrowserRouter>
   )
 }
-
-export default App
