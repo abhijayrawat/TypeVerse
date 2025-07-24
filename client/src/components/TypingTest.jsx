@@ -1,4 +1,6 @@
-import { useState, useEffect, useRef } from "react";
+import { useContext, useEffect, useState, useRef } from "react";
+import { AuthContext } from "../context/AuthContext";
+import axios from "axios";
 import TypingDisplay from "./TypingDisplay";
 import StatsPanel from "./StatsPanel";
 import words from "../words";
@@ -8,16 +10,18 @@ function getWords(n = 25) {
 }
 
 export default function TypingTest() {
+  const { token } = useContext(AuthContext);
+
   const [wordList, setWordList] = useState(getWords());
   const [input, setInput] = useState("");
   const [started, setStarted] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(15); // seconds
+  const [timeLeft, setTimeLeft] = useState(15);
   const [finished, setFinished] = useState(false);
   const [correctChars, setCorrectChars] = useState(0);
   const [totalChars, setTotalChars] = useState(0);
   const timerRef = useRef(null);
 
-  // Start timer on first key stroke
+  // Timer logic
   useEffect(() => {
     if (started && timeLeft > 0) {
       timerRef.current = setTimeout(() => {
@@ -32,21 +36,37 @@ export default function TypingTest() {
 
   // Calculate stats
   const calculateStats = () => {
-    const wpm = Math.round((correctChars / 5 / (15 - timeLeft)) * 60) || 0;
-    const accuracy = totalChars === 0 ? 100 : Math.round((correctChars / totalChars) * 100);
+    const elapsedTime = 15 - timeLeft;
+    const wpm = elapsedTime > 0 ? Math.round((correctChars / 5 / elapsedTime) * 60) : 0;
+    const accuracy = totalChars > 0 ? Math.round((correctChars / totalChars) * 100) : 100;
     return { wpm, accuracy };
   };
 
-  // Handle input change
+  // Save to backend when test finishes
+  useEffect(() => {
+    if (finished && token) {
+      const { wpm, accuracy } = calculateStats();
+      const testTime = 15;
+
+      axios
+        .post(
+          `${import.meta.env.VITE_API_URL}/api/tests`,
+          { wpm, accuracy, time: testTime },
+          { headers: { Authorization: `Bearer ${token}` } }
+        )
+        .catch((err) => console.error("Failed to save test result", err));
+    }
+  }, [finished]);
+
   const handleChange = (e) => {
     if (!started) setStarted(true);
     if (finished) return;
+
     const val = e.target.value;
     setInput(val);
 
     const targetText = wordList.join(" ");
     let correct = 0;
-    // Count correct chars
     for (let i = 0; i < val.length; i++) {
       if (val[i] === targetText[i]) {
         correct++;
@@ -56,7 +76,6 @@ export default function TypingTest() {
     setTotalChars(val.length);
   };
 
-  // Restart Test
   const restartTest = () => {
     setWordList(getWords());
     setInput("");
@@ -70,7 +89,7 @@ export default function TypingTest() {
   const stats = calculateStats();
 
   return (
-    <div className="flex flex-col items-center min-h-screen bg-zinc-900 text-white p-8">
+    <div className="flex flex-col items-center min-h-screen bg-zinc-900 text-white p-8 pt-20">
       <h1 className="text-4xl mb-8 font-mono font-bold">TypeVerse</h1>
 
       <StatsPanel wpm={stats.wpm} accuracy={stats.accuracy} timeLeft={timeLeft} />

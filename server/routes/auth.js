@@ -1,10 +1,18 @@
-const express = require("express");
+import express from "express";
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+import User from "../models/User.js"; // note .js added
+
 const router = express.Router();
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
-const User = require("../models/User");
 
 const JWT_SECRET = process.env.JWT_SECRET || "your_jwt_secret";
+
+if (!JWT_SECRET) {
+  console.error("JWT_SECRET not set in environment");
+  process.exit(1);
+}
+
+
 
 // Register
 router.post("/register", async (req, res) => {
@@ -55,4 +63,4 @@ router.post("/login", async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;

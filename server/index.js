@@ -1,8 +1,12 @@
-require('dotenv').config();
-const express = require('express');
-const mongoose = require('mongoose');
-const cors = require('cors');
-const authRoutes = require("./routes/auth");
+import express from "express";
+import mongoose from "mongoose";
+import cors from "cors";
+
+import authRoutes from "./routes/auth.js";
+import testsRoutes from "./routes/tests.js";
+
+import dotenv from "dotenv";
+dotenv.config();
 
 const app = express();
 
@@ -12,6 +16,7 @@ app.use(express.json());
 // Sample test route
 app.get('/api/ping', (req, res) => res.json({ message: 'pong' }));
 app.use("/api/auth", authRoutes);
+app.use("/api/tests", testsRoutes);
 
 const PORT = process.env.PORT || 5000;
 const MONGO_URI = process.env.MONGO_URI;

@@ -1,15 +1,19 @@
-import TypingTest from "./components/TypingTest";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
-import { BrowserRouter } from "react-router-dom";
+import TypingTest from "./components/TypingTest";
+import Dashboard from "./components/Dashboard";
 
 export default function App() {
-  
-  return(
+  return (
     <BrowserRouter>
-    <div className="pt-16"> {/* Add padding to prevent overlap from fixed navbar */}
-        <Navbar />
-        <TypingTest />
+      <Navbar />
+      <div className="pt-16 min-h-screen bg-zinc-900 text-white">
+        <Routes>
+          <Route path="/" element={<TypingTest />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          {/* other routes */}
+        </Routes>
       </div>
     </BrowserRouter>
-  )
+  );
 }
