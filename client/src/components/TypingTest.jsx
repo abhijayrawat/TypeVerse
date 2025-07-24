@@ -12,22 +12,24 @@ function getWords(n = 25) {
 export default function TypingTest() {
   const { token } = useContext(AuthContext);
 
-  const [testDuration, setTestDuration] = useState(15); // default 15 seconds
+  const [testDuration, setTestDuration] = useState(15); // for UI & stats
+  const [timeLeft, setTimeLeft] = useState(15);          // for countdown
   const [wordList, setWordList] = useState(getWords());
   const [input, setInput] = useState("");
   const [started, setStarted] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(testDuration);
   const [finished, setFinished] = useState(false);
   const [correctChars, setCorrectChars] = useState(0);
   const [totalChars, setTotalChars] = useState(0);
   const timerRef = useRef(null);
+  const [skipSpaces, setSkipSpaces] = useState(false);
+
 
   // Reset test
-  const restartTest = () => {
+  const restartTest = (time) => {
     setWordList(getWords());
     setInput("");
     setStarted(false);
-    setTimeLeft(testDuration);
+    setTimeLeft(time);
     setFinished(false);
     setCorrectChars(0);
     setTotalChars(0);
@@ -36,7 +38,7 @@ export default function TypingTest() {
   // Timer effect
   useEffect(() => {
     if (started && timeLeft > 0) {
-      timerRef.current = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
+      timerRef.current = setTimeout(() => setTimeLeft((t) => t - 1), 1000);
     } else if (timeLeft === 0) {
       setFinished(true);
       clearTimeout(timerRef.current);
@@ -84,57 +86,38 @@ export default function TypingTest() {
     }
   }, [finished]);
 
-  // Handle input with soft auto-space
   const handleChange = (e) => {
-    if (!started) setStarted(true);
-    if (finished) return;
-    let val = e.target.value;
+  if (!started) setStarted(true);
+  if (finished) return;
 
-    const targetText = wordList.join(" ");
-    // Remove all spaces typed by the user
-    let cleanedVal = "";
-    for (let i = 0; i < val.length; i++) {
-      if (val[i] !== " ") cleanedVal += val[i];
-    }
-    // Place spaces where words would occur
-    let rebuiltInput = "";
-    let typedIdx = 0;
-    for (let w of wordList) {
-      const len = w.length;
-      if (typedIdx + len <= cleanedVal.length) {
-        rebuiltInput += w + " ";
-        typedIdx += len;
-      } else {
-        rebuiltInput += cleanedVal.slice(typedIdx);
-        break;
-      }
-    }
-    if (rebuiltInput.length > targetText.length) {
-      rebuiltInput = rebuiltInput.slice(0, targetText.length);
-    }
+  const val = e.target.value;
+  const target = wordList.join(" ");
 
-    setInput(rebuiltInput);
+  let correct = 0;
+  const minLen = Math.min(val.length, target.length);
 
-    let correct = 0;
-    for (let i = 0; i < rebuiltInput.length; i++) {
-      if (rebuiltInput[i] === targetText[i]) correct++;
-    }
-    setCorrectChars(correct);
-    setTotalChars(rebuiltInput.length);
-  };
+  for (let i = 0; i < minLen; i++) {
+    if (val[i] === target[i]) correct++;
+  }
+
+  setInput(val);
+  setCorrectChars(correct);
+  setTotalChars(val.length);
+};
+
 
   return (
     <div className="flex flex-col items-center min-h-screen bg-zinc-900 text-white p-8 pt-20">
       <h1 className="text-4xl mb-8 font-mono font-bold">TypeVerse</h1>
 
-      {/* Horizontal button group for test time selection */}
+      {/* Time Selector Buttons */}
       <div className="mb-6 flex flex-row gap-4">
-        {[5, 15, 30, 60].map((time) => (
+        {[15, 30, 60].map((time) => (
           <button
             key={time}
             onClick={() => {
-              setTestDuration(time);
-              restartTest();
+              setTestDuration(time); // UI highlight & saving
+              restartTest(time);     // immediate logic
             }}
             disabled={started}
             className={`px-4 py-2 rounded-full font-semibold transition focus:outline-none
@@ -147,6 +130,7 @@ export default function TypingTest() {
           </button>
         ))}
       </div>
+      
 
       <StatsPanel wpm={calculateStats().wpm} accuracy={calculateStats().accuracy} timeLeft={timeLeft} />
       <TypingDisplay wordList={wordList} input={input} finished={finished} />
@@ -159,7 +143,7 @@ export default function TypingTest() {
         autoFocus
       />
       <button
-        onClick={restartTest}
+        onClick={() => restartTest(testDuration)}
         className="mt-6 px-8 py-3 rounded bg-yellow-500 hover:bg-yellow-400 text-black font-bold transition"
       >
         Restart
