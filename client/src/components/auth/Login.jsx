@@ -1,10 +1,9 @@
 import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import { AuthContext } from "../context/AuthContext";
+import { AuthContext } from "../../context/AuthContext";
 
-export default function Signup() {
-  const { register, login } = useContext(AuthContext);
-  const [username, setUsername] = useState("");
+export default function Login() {
+  const { login } = useContext(AuthContext);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
@@ -13,27 +12,18 @@ export default function Signup() {
   async function handleSubmit(e) {
     e.preventDefault();
     try {
-      await register(username, email, password);
-      await login(email, password); // Optional: auto-login after signup
+      await login(email, password);
       setError(null);
       navigate("/dashboard");
     } catch {
-      setError("Failed to register. Try again.");
+      setError("Invalid credentials");
     }
   }
 
   return (
     <form onSubmit={handleSubmit} className="max-w-md mx-auto p-4 bg-zinc-800 rounded mt-20">
-      <h2 className="text-2xl mb-4">Sign Up</h2>
+      <h2 className="text-2xl mb-4">Login</h2>
       {error && <p className="mb-4 text-red-500">{error}</p>}
-      <input
-        type="text"
-        placeholder="Username"
-        className="mb-4 w-full p-2 rounded bg-zinc-700"
-        value={username}
-        onChange={(e) => setUsername(e.target.value)}
-        required
-      />
       <input
         type="email"
         placeholder="Email"
@@ -51,7 +41,7 @@ export default function Signup() {
         required
       />
       <button type="submit" className="bg-yellow-400 px-4 py-2 rounded font-bold w-full">
-        Sign Up
+        Login
       </button>
     </form>
   );

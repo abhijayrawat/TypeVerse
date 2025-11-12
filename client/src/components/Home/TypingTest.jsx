@@ -1,5 +1,5 @@
 import React, { useState, useContext, useCallback,useMemo } from "react";
-import { AuthContext } from "../context/AuthContext";
+import { AuthContext } from "../../context/AuthContext";
 import TypingDisplay from "./TypingDisplay";
 import TypingArea from "./TypingArea";
 import StatsPanel from "./StatsPanel";
@@ -8,8 +8,8 @@ import DurationSelector from "./DurationSelector";
 import RestartButton from "./RestartButton";
 import FinishedSummary from "./FinishedSummary";
 import SoundToggle from "./SoundToggle";
-import useTypingTest from "../hooks/useTypingTest";
-import useSaveResult from "../hooks/useSaveResult";
+import useTypingTest from "../../hooks/useTypingTest";
+import useSaveResult from "../../hooks/useSaveResult";
 
 export default function TypingTest() {
   const { token } = useContext(AuthContext);
@@ -65,6 +65,7 @@ export default function TypingTest() {
       
 
       <div className="relative w-full flex justify-center mb-6 select-none">
+         <div class="absolute left-1/2 transform -translate-x-1/2">
   <DurationSelector
     mode={mode}
     testDuration={testDuration}
@@ -74,7 +75,8 @@ export default function TypingTest() {
     started={started}
     restart={restart}
   />
-  <div className="absolute right-70 top-1/2 -translate-y-1/2">
+  </div>
+  <div class="ml-auto">
     <SoundToggle muted={muted} setMuted={setMuted} />
   </div>
 </div>

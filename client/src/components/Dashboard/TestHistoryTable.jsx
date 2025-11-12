@@ -1,6 +1,5 @@
 import React from "react";
-
-const TestHistoryTable = React.memo(function TestHistoryTable({ history }) {
+const TestHistoryTable = React.memo(function TestHistoryTable({ history, mode }) {
   if (history.length === 0) {
     return <p className="text-zinc-400">No tests taken yet.</p>;
   }
@@ -12,7 +11,7 @@ const TestHistoryTable = React.memo(function TestHistoryTable({ history }) {
           <th className="p-2 text-left">Date</th>
           <th className="p-2 text-left">WPM</th>
           <th className="p-2 text-left">Accuracy</th>
-          <th className="p-2 text-left">Time (s)</th>
+          <th className="p-2 text-left">{mode === "time" ? "Time (s)" : "Word Count"}</th>
           <th className="p-2 text-left">Mode</th>
         </tr>
       </thead>
@@ -31,4 +30,4 @@ const TestHistoryTable = React.memo(function TestHistoryTable({ history }) {
   );
 });
 
-export default TestHistoryTable;
+export default TestHistoryTable

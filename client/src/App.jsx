@@ -1,11 +1,11 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
-import TypingTest from "./components/TypingTest";
+import TypingTest from "./components/Home/TypingTest";
 import Dashboard from "./components/Dashboard/Dashboard.jsx";
-import Login from "./components/Login";
-import Signup from "./components/Signup";
+import Login from "./components/auth/Login";
+import Signup from "./components/auth/Signup";
 import Leaderboard from "./components/Leaderboard.jsx";
-import Profile from "./components/Profile";
+import Profile from "./components/Profile.jsx";
 
 import PrivateRoute from "./components/PrivateRoute";
 
