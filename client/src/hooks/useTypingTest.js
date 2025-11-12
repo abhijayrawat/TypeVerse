@@ -35,7 +35,7 @@ export default function useTypingTest(
   const restart = useCallback(
     (duration = testDuration, wordCount = wordTarget, modeOverride) => {
       const actualMode = modeOverride || mode;
-      const nWords = actualMode === "words" ? wordCount : 25;
+      const nWords = actualMode === "words" ? wordCount : 50;
       setWordList(pickWords(nWords));
 
       if (actualMode === "time") {

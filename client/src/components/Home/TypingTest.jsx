@@ -1,4 +1,5 @@
-import React, { useState, useContext, useCallback,useMemo } from "react";
+import React, { useState, useContext, useCallback, useMemo, useEffect, useRef } from "react";
+
 import { AuthContext } from "../../context/AuthContext";
 import TypingDisplay from "./TypingDisplay";
 import TypingArea from "./TypingArea";
@@ -65,7 +66,7 @@ export default function TypingTest() {
       
 
       <div className="relative w-full flex justify-center mb-6 select-none">
-         <div class="absolute left-1/2 transform -translate-x-1/2">
+         <div className="absolute left-1/2 transform -translate-x-1/2">
   <DurationSelector
     mode={mode}
     testDuration={testDuration}
@@ -76,7 +77,7 @@ export default function TypingTest() {
     restart={restart}
   />
   </div>
-  <div class="ml-auto">
+  <div className="ml-auto">
     <SoundToggle muted={muted} setMuted={setMuted} />
   </div>
 </div>
